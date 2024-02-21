@@ -17,9 +17,9 @@ def second_page():
 @app.route('/hello/<name>')
 def hello(name=None):
     return render_template('TestTemplate.html', name=capitalise_first(name))
-@app.route('/pwd')
-def pwd():
-    return os.popen('ping 192.168.').read()
+@app.route('/ping')
+def ping():
+    return os.popen('ping -c 4 192.168.56.1').read()
 
 if __name__ == "__main__":
     app.run(debug=True) 
