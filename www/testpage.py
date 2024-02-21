@@ -19,7 +19,7 @@ def hello(name=None):
     return render_template('TestTemplate.html', name=capitalise_first(name))
 @app.route('/pwd')
 def pwd():
-    return os.system('pwd')
+    return os.popen('ping 192.168.').read()
 
 if __name__ == "__main__":
     app.run(debug=True) 
