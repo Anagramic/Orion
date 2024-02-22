@@ -43,7 +43,60 @@ def get_tasks():
     
     return tasks_array
 
-def format_data(data):
+def format_data(data): #data is a list of dictionaries with the same key
+    headings = data[0].keys()
+
+    data_array = []
+    for dictionary in data:
+        data_array.append(dictionary.values())
+
+    print(data_array) 
+    #makes all cells strings
+    for row in data_array:
+        for position in range(len(row)):
+            row[position] = str(row[position])
+
+    for position in range(len(headings)):
+        headings[position] = str(headings[position])
+
+    #makes a list of the max length of each row   
+    row_lengths = []
+    for heading in headings: #sets all the max lengths to be at lest the length of the heading
+        row_lengths.appen(len(heading))
+
+    for position in range(len(row_lengths)): #changes the length if the new found entry is longer
+        for row in data_array:
+            if len(row[position]) > row_lengths[position]:
+                row_lengths[position] = len(row[position])
+    
+    final_output = '|'
+    for position in range(len(headings)):
+        final_output = final_output + headings[position] #adds the heading
+        for _ in range(row_lengths[position]):  #adds the trailing spaces
+            final_output+=' '
+        final_output+='\n'
+    table_width = len(final_output)
+    line = ''
+    
+    for _ in range (table_width):
+        line+='-'
+    
+    final_output = line+'\n'+final_output+line+'\n'
+
+    for row in data_array:
+        final_output +='|'
+        for position in range(len(row)):
+            final_output+=row[position]
+            for _ in range(row_lengths[position]-len(row[position])):
+                final_output+=' '
+            final_output += '|'
+        final_output += line + '\n'
+    
+    print(final_output)
+    
+
+
+def format_data_wrong(data):
     #get headings
     headings = data[0].keys()
     print(headings)
