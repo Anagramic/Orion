@@ -1,6 +1,19 @@
 import os
 import time
 
+def start_running(command,taskID):
+    os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
+    with open('OUTPUT') as file:
+        file.write(os.popen(command).read())
+    
+    with open('STATUS') as file:
+        file.write('COMPLETE')
+    
+    with open('TIME_STOP') as file:
+        file.write(time.time())
+
+
+
 def get_tasks():
     os.chdir('/home/kali/Orion/Queuing/Tasks')
     
@@ -96,8 +109,29 @@ def format_data(data): #data is a list of dictionaries with the same key
 
 def new_task(command):
     tasks = get_tasks()
-    format_data(tasks)
-    os.system('pwd')
-    return os.popen(command).read()
+
+    ids = [] # will break if no files exist
+    if tasks != []:
+        for task in tasks:
+            ids.append(task['id'])
+        new_id = {ids.sort()[-1]} +1
+    else:
+        new_id = 1
+        
+    os.mkdir(f'/home/kali/Orion/Queuing/Tasks/{new_id}/')
+    os.chdir(f'/home/kali/Orion/Queuing/Tasks/{new_id}/')
+    
+    with open('COMMMAND','w') as file:
+        file.write(command)
+    with open('OUTPUT','w'): pass
+    with open('STATUS','w') as file:
+        file.write('WORKING')
+    with open('TIME_START') as file:
+        file.write(time.time())
+    with open('TIME_STOP') as file:
+        file.write(time.time())
+    
+    start_running(command, new_id)
+    return 
 
 print(new_task('ping -c 1 192.168.137.1'))
