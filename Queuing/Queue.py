@@ -1,4 +1,5 @@
 import os
+import time
 
 def get_tasks():
     os.chdir('/home/kali/Orion/Queuing/Tasks')
@@ -17,14 +18,27 @@ def get_tasks():
         
         with open('COMMAND') as file:
             command = file.read()
-        
+
+        with open('TIME_START') as file:
+                time_start = file.read()
+
         if status == 'COMPLETE':
             with open('OUTPUT') as file:
                 result = file.read()
+            with open('TIME_STOP') as file:
+                time_stop = file.read()
         else:
             result = 'in progress'
+            time_stop = time.time()
 
-        tasks_array.append({'id':task,'status': status, 'command':command, 'result':result})
+        tasks_array.append({
+            'id':task,
+            'status': status, 
+            'command':command, 
+            'result':result, 
+            'time_start':time_start, 
+            'time_stop':time_stop})
+        
         os.chdir('/home/kali/Orion/Queuing/Tasks')
     
     return tasks_array
