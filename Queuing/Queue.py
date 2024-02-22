@@ -32,23 +32,76 @@ def get_tasks():
             time_stop = time.time()
 
         tasks_array.append({
-            'id':task,
-            'status': status, 
-            'command':command, 
-            'result':result, 
+            'id'        :task,
+            'status'    :status, 
+            'command'   :command, 
+            'result'    :result, 
             'time_start':time_start, 
-            'time_stop':time_stop})
+            'time_stop' :time_stop})
         
         os.chdir('/home/kali/Orion/Queuing/Tasks')
     
     return tasks_array
 
+def format_data(data):
+    #get headings
+    headings = data[0].keys()
+    print(headings)
+    max_length = 0
+    data_array = []
+
+    for dictionary in data:
+        data_array.append(dictionary.values())
+
+    for heading in headings:
+    
+        if len(heading) > max_length:
+            max_length = len(heading)
+    
+    for row in data_array:
+    
+        for cell in row:
+            cell = str(cell)
+            if len(cell) > max_length:
+                max_length = len(cell)
+    
+    final_output = '|'
+    for heading in headings:
+        final_output+=heading
+        for _ in range(max_length-len(heading)):
+            final_output+=' '
+        final_output+='|'
+
+    row_length=len(final_output)
+    cross = ''
+
+    for _ in range(row_length//2):
+        cross+='_'
+    cross+='\n'
+
+    final_output = cross + final_output + "\n"
+    for row in data_array:
+        new_row = '|'
+        for cell in row:
+            cell = str(cell)
+            new_row+=cell
+            for _ in range(max_length-len(cell)):
+                new_row+=' '
+        final_output+= new_row + '|\n' + cross
+    
+    print(final_output)
+
+    
+            
+        
+    
+    
+
+
 
 def new_task(command):
     tasks = get_tasks()
-    
-    for task in tasks:
-        print(task)
+    format_data(tasks)
     os.system('pwd')
     return os.popen(command).read()
 
