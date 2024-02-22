@@ -44,13 +44,12 @@ def get_tasks():
     return tasks_array
 
 def format_data(data): #data is a list of dictionaries with the same key
-    headings = data[0].keys()
+    headings = list(data[0].keys())
 
     data_array = []
     for dictionary in data:
-        data_array.append(dictionary.values())
+        data_array.append(list(dictionary.values()))
 
-    print(data_array) 
     #makes all cells strings
     for row in data_array:
         for position in range(len(row)):
@@ -62,7 +61,7 @@ def format_data(data): #data is a list of dictionaries with the same key
     #makes a list of the max length of each row   
     row_lengths = []
     for heading in headings: #sets all the max lengths to be at lest the length of the heading
-        row_lengths.appen(len(heading))
+        row_lengths.append(len(heading))
 
     for position in range(len(row_lengths)): #changes the length if the new found entry is longer
         for row in data_array:
@@ -74,7 +73,8 @@ def format_data(data): #data is a list of dictionaries with the same key
         final_output = final_output + headings[position] #adds the heading
         for _ in range(row_lengths[position]):  #adds the trailing spaces
             final_output+=' '
-        final_output+='\n'
+        final_output += '|'
+    final_output+='\n'
     table_width = len(final_output)
     line = ''
     
@@ -93,64 +93,6 @@ def format_data(data): #data is a list of dictionaries with the same key
         final_output += line + '\n'
     
     print(final_output)
-    
-
-
-def format_data_wrong(data):
-    #get headings
-    headings = data[0].keys()
-    print(headings)
-    max_length = 0
-    data_array = []
-
-    for dictionary in data:
-        data_array.append(dictionary.values())
-
-    for heading in headings:
-    
-        if len(heading) > max_length:
-            max_length = len(heading)
-    
-    for row in data_array:
-    
-        for cell in row:
-            cell = str(cell)
-            if len(cell) > max_length:
-                max_length = len(cell)
-    
-    final_output = '|'
-    for heading in headings:
-        final_output+=heading
-        for _ in range(max_length-len(heading)):
-            final_output+=' '
-        final_output+='|'
-
-    row_length=len(final_output)
-    cross = ''
-
-    for _ in range(row_length//2):
-        cross+='_'
-    cross+='\n'
-
-    final_output = cross + final_output + "\n"
-    for row in data_array:
-        new_row = '|'
-        for cell in row:
-            cell = str(cell)
-            new_row+=cell
-            for _ in range(max_length-len(cell)):
-                new_row+=' '
-        final_output+= new_row + '|\n' + cross
-    
-    print(final_output)
-
-    
-            
-        
-    
-    
-
-
 
 def new_task(command):
     tasks = get_tasks()
