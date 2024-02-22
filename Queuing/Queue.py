@@ -3,14 +3,14 @@ import time
 
 def start_running(command,taskID):
     os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
-    with open('OUTPUT') as file:
+    with open('OUTPUT','w') as file:
         file.write(os.popen(command).read())
     
-    with open('STATUS') as file:
+    with open('STATUS','w') as file:
         file.write('COMPLETE')
     
-    with open('TIME_STOP') as file:
-        file.write(time.time())
+    with open('TIME_STOP','w') as file:
+        file.write(str(time.time()))
 
 
 
@@ -114,24 +114,24 @@ def new_task(command):
     if tasks != []:
         for task in tasks:
             ids.append(task['id'])
-        new_id = {ids.sort()[-1]} +1
+        ids.sort()
+        new_id = int(ids[-1]) +1
     else:
         new_id = 1
-        
+
     os.mkdir(f'/home/kali/Orion/Queuing/Tasks/{new_id}/')
     os.chdir(f'/home/kali/Orion/Queuing/Tasks/{new_id}/')
     
-    with open('COMMMAND','w') as file:
+    with open('COMMAND','w') as file:
         file.write(command)
     with open('OUTPUT','w'): pass
     with open('STATUS','w') as file:
         file.write('WORKING')
-    with open('TIME_START') as file:
-        file.write(time.time())
-    with open('TIME_STOP') as file:
-        file.write(time.time())
-    
-    start_running(command, new_id)
-    return 
+    with open('TIME_START','w') as file:
+        file.write(str(time.time()))
+    with open('TIME_STOP','w') as file:
+        file.write(str(time.time()))
 
-print(new_task('ping -c 1 192.168.137.1'))
+    start_running(command, new_id)
+
+new_task('ping -c 1 192.168.137.1')
