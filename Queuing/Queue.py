@@ -41,7 +41,7 @@ def get_tasks():
             with open('TIME_STOP') as file:
                 time_stop = file.read()
         else:
-            result = 'in progress'
+            result = status.lower().capitalize()
             time_stop = time.time()
 
         tasks_array.append({
@@ -126,7 +126,7 @@ def new_task(command):
         file.write(command)
     with open('OUTPUT','w'): pass
     with open('STATUS','w') as file:
-        file.write('WORKING')
+        file.write('NOT STARTED')
     with open('TIME_START','w') as file:
         file.write(str(time.time()))
     with open('TIME_STOP','w') as file:
@@ -134,4 +134,4 @@ def new_task(command):
 
     start_running(command, new_id)
 
-new_task('ping -c 1 192.168.137.1')
+new_task('ping -c 10 192.168.137.1')
