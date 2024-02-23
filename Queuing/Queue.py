@@ -1,12 +1,12 @@
 import os
 import time
 import sys
+import subprocess
 
 def start_running(taskID):
     os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
     with open('STATUS','w') as file:
         file.write('WORKING')
-
     run_command(taskID)
 
 def run_command(taskID):
@@ -14,9 +14,8 @@ def run_command(taskID):
     
     with open('COMMAND','r') as file:
         command = file.readline()
-        print(command)
-
-    os.popen(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUTPUT")
+    subprocess.run(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUTPUT",shell=True)
+    #os.popen(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUTPUT") #doesn't wait for completion?
     
     with open('STATUS','w') as file:
         file.write('COMPLETE')
@@ -45,7 +44,7 @@ def get_task_info(task_id):
         with open('TIME_STOP') as file:
             time_stop = file.read()
     else:
-        result = status.lower().capitalize()
+        result = status #remove?
         time_stop = time.time()
     return {
             'id'        :task_id,
@@ -128,7 +127,7 @@ def new_task(command):
     ids = [] # will break if no files exist
     if tasks != []:
         for task in tasks:
-            ids.append(task['id'])
+            ids.append(int(task['id']))
         ids.sort()
         new_id = int(ids[-1]) +1
     else:
@@ -150,7 +149,6 @@ def new_task(command):
     return(new_id)
 
 if __name__ == "__main__":
-    print(sys.argv[1])
     start_running(sys.argv[1])
 
 #How to use this

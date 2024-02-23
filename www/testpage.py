@@ -27,10 +27,10 @@ def ping():
 
 @app.route('/ping/<ip_address>')
 def ping2(ip_address):
-    task_id = Queue.new_task(f'ping -c 1 {ip_address}') #breaks at 10 tasks???
-    print("!!!!!!"+str(task_id))
-    subprocess.call(["python","/home/kali/Orion/Queuing/Queue.py", f"{task_id}"])
-    return "ended"
+    task_id = Queue.new_task(f'ping -c 10 {ip_address}')
+    subprocess.Popen(f"python /home/kali/Orion/Queuing/Queue.py {task_id}",shell=True)
+    task_info = Queue.get_task_info(task_id)
+    return task_info
 
 if __name__ == "__main__":
     app.run(debug=True) 
