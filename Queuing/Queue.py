@@ -1,10 +1,19 @@
 import os
 import time
+import sys
+import subprocess
 
-def start_running(command,taskID):
+def start_running(taskID):
+    run_command(taskID)
+
+def run_command(taskID):
     os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
-    with open('OUTPUT','w') as file:
-        file.write(os.popen(command).read())
+    
+    with open('COMMAND','r') as file:
+        command = file.readline()
+        print(command)
+
+    os.popen(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUPUT")
     
     with open('STATUS','w') as file:
         file.write('COMPLETE')
@@ -132,6 +141,7 @@ def new_task(command):
     with open('TIME_STOP','w') as file:
         file.write(str(time.time()))
 
-    start_running(command, new_id)
+    return(new_id)
 
-new_task('ping -c 10 192.168.137.1')
+if __name__ == "__main__":
+    start_running(new_task(sys.argv[1]))
