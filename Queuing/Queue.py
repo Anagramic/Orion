@@ -4,16 +4,20 @@ import sys
 import subprocess
 
 def start_running(taskID):
+    os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
+    with open('STATUS','w') as file:
+        file.write('WORKING')
+
     run_command(taskID)
 
 def run_command(taskID):
-    os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
+    os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/') #add path?
     
     with open('COMMAND','r') as file:
         command = file.readline()
         print(command)
 
-    os.popen(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUPUT")
+    os.popen(f"{command} > /home/kali/Orion/Queuing/Tasks/{taskID}/OUTPUT")
     
     with open('STATUS','w') as file:
         file.write('COMPLETE')
@@ -21,7 +25,36 @@ def run_command(taskID):
     with open('TIME_STOP','w') as file:
         file.write(str(time.time()))
 
+def get_task_info(task_id):
+    try:
+        os.chdir(f'/home/kali/Orion/Queuing/Tasks/{task_id}/')
+    except:
+        return "not found"
+    
+    with open('STATUS') as file:
+            status = file.read()
+        
+    with open('COMMAND') as file:
+        command = file.read()
 
+    with open('TIME_START') as file:
+            time_start = file.read()
+
+    if status == 'COMPLETE':
+        with open('OUTPUT') as file:
+            result = file.read()
+        with open('TIME_STOP') as file:
+            time_stop = file.read()
+    else:
+        result = status.lower().capitalize()
+        time_stop = time.time()
+    return {
+            'id'        :task_id,
+            'status'    :status, 
+            'command'   :command, 
+            'result'    :result, 
+            'time_start':time_start, 
+            'time_stop' :time_stop}
 
 def get_tasks():
     os.chdir('/home/kali/Orion/Queuing/Tasks')
@@ -33,33 +66,7 @@ def get_tasks():
     #Goes throuhg all task folders and extraxcts the data (id,status,command,result) associated
     for task in tasks:
         os.chdir(task)
-        files = os.popen('ls').read().split()
-        
-        with open('STATUS') as file:
-            status = file.read()
-        
-        with open('COMMAND') as file:
-            command = file.read()
-
-        with open('TIME_START') as file:
-                time_start = file.read()
-
-        if status == 'COMPLETE':
-            with open('OUTPUT') as file:
-                result = file.read()
-            with open('TIME_STOP') as file:
-                time_stop = file.read()
-        else:
-            result = status.lower().capitalize()
-            time_stop = time.time()
-
-        tasks_array.append({
-            'id'        :task,
-            'status'    :status, 
-            'command'   :command, 
-            'result'    :result, 
-            'time_start':time_start, 
-            'time_stop' :time_stop})
+        tasks_array.append(get_task_info(task))
         
         os.chdir('/home/kali/Orion/Queuing/Tasks')
     
@@ -144,4 +151,9 @@ def new_task(command):
     return(new_id)
 
 if __name__ == "__main__":
-    start_running(new_task(sys.argv[1]))
+    print(sys.argv[1])
+    start_running(sys.argv[1])
+
+#How to use this
+#Run new_task as a library in flask
+#Then pass the task id returned back into this as a sys arg which runs as subproccess
