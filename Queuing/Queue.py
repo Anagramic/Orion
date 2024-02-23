@@ -1,7 +1,6 @@
 import os
 import time
 import sys
-import subprocess
 
 def start_running(taskID):
     os.chdir(f'/home/kali/Orion/Queuing/Tasks/{taskID}/')
