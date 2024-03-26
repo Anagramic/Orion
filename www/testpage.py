@@ -32,6 +32,9 @@ def ping2(ip_address):
     task_info = Queue.get_task_info(task_id)
     return task_info
 
+@app.route('/home')
+def homepage():
+    return render_template('HomePageTemplate.html')
 if __name__ == "__main__":
     app.run(debug=True) 
 
