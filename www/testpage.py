@@ -11,7 +11,7 @@ app = Flask(__name__, template_folder='templates')
 
 @app.route('/')
 def index():
-    return "<h1>Hello, World!</h1>"
+    return render_template('HomePageTemplate.html')
 
 @app.route('/Page')
 def second_page():
@@ -32,9 +32,6 @@ def ping2(ip_address):
     task_info = Queue.get_task_info(task_id)
     return task_info
 
-@app.route('/home')
-def homepage():
-    return render_template('HomePageTemplate.html')
 if __name__ == "__main__":
     app.run(debug=True) 
 
